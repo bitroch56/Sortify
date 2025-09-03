@@ -1,2 +1,3 @@
-# SpotifyPlaylistSort
-Web App using the Spotify's API to help you sort playlist depending on your music tastes. Create a playlist with multiples songs, listen to a preview of your songs and give them an appreciation.
+# Sortify - your best friend for weekly updates
+## How was this project born?
+As a teen, I discovered French rap songs and fell in love with them. I developed a habit: every Friday, I would look for new albums, new artists, new genres, in order to put them in a big playlist, sorted by weekly preferences. 8ruki's album could have a single that I loved at the top of it, then followed by a Femtogo warfare music single. Why not a TKKF hyperpop track after that? And then another 8ruki song... I was sorting them one by one, listening to them through short samples. That's why I thought about making an application to help me with this process.
