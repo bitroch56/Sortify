@@ -1,47 +1,46 @@
 {
-  "name": "sortify",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.8.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "cross-env HOST=127.0.0.1 react-scripts start",
-    "build": "react-scripts build",
-    "server": "cross-env HOST=127.0.0.1 node server",
-    "dev": "run-p server start"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ]
   },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
   "devDependencies": {
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react-swc": "^4.0.1",
     "cross-env": "^10.0.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "http-proxy-middleware": "^3.0.5",
-    "npm-run-all": "^4.1.5",
-    "request": "^2.88.2"
-  }
+    "npm-run-all2": "^8.0.4",
+    "oxlint": "^1.14.0",
+    "oxlint-tsgolint": "^0.2.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.5"
+  },
+  "name": "sortify",
+  "private": true,
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:back": "cross-env HOST=127.0.0.1 node server",
+    "dev:front": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint --type-aware .",
+    "lint:fix": "oxlint --fix --type-aware .",
+    "format": "prettier --write --cache --cache-location .prettier-cache --config .prettierrc .",
+    "preview": "vite preview"
+  },
+  "version": "0.1.0"
 }
