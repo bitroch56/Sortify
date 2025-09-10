@@ -12,35 +12,47 @@
     ]
   },
   "dependencies": {
+    "@fastify/http-proxy": "^11.3.0",
+    "fastify": "^5.6.0",
+    "fastify-plugin": "^5.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@prettier/plugin-oxc": "^0.0.4",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react-swc": "^4.0.1",
     "cross-env": "^10.0.0",
     "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "http-proxy-middleware": "^3.0.5",
+    "lint-staged": "^16.1.6",
     "npm-run-all2": "^8.0.4",
     "oxlint": "^1.14.0",
     "oxlint-tsgolint": "^0.2.0",
     "prettier": "^3.6.2",
+    "simple-git-hooks": "^2.13.1",
+    "tsx": "^4.20.5",
     "typescript": "~5.9.2",
     "vite": "^7.1.5"
   },
+  "lint-staged": {
+    "*": "pnpm prettier --write --config .prettierrc"
+  },
   "name": "sortify",
+  "packageManager": "pnpm@10.15.1",
   "private": true,
   "scripts": {
-    "dev": "run-p dev:*",
-    "dev:back": "cross-env HOST=127.0.0.1 node server",
-    "dev:front": "vite",
     "build": "tsc -b && vite build",
+    "dev": "run-p dev:*",
+    "dev:back": "cross-env HOST=127.0.0.1 tsx ./server/main.ts",
+    "dev:front": "vite",
+    "format": "prettier --write --cache --cache-location .prettier-cache --config .prettierrc .",
     "lint": "oxlint --type-aware .",
     "lint:fix": "oxlint --fix --type-aware .",
-    "format": "prettier --write --cache --cache-location .prettier-cache --config .prettierrc .",
     "preview": "vite preview"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
   },
   "version": "0.1.0"
 }

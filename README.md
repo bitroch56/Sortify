@@ -35,3 +35,26 @@ Several sorting methods are planned to help you organize your playlist according
 - **Delete unwanted songs:** If a track really doesn't fit your vibe ("shitass song"), you can remove it from the final playlist with a single click.
 
 Other sorting algorithms and options may be considered in the future to further personalize and improve your playlist experience.
+
+## Development setup
+
+```pwsh
+git clone https://github.com/bitroch56/Sortify.git && cd Sortify
+pnpm i
+```
+
+Create a `.env` file in the root directory and add your Spotify API credentials:
+
+```env
+BACKEND_PORT=5000
+FRONTEND_PORT=3000
+SPOTIFY_CLIENT_ID=your_client_id
+SPOTIFY_CLIENT_SECRET=your_client_secret
+SPOTIFY_REDIRECT_URI=http://localhost:5000/callback
+```
+
+Then, run the development server:
+
+```pwsh
+pnpm dev
+```
