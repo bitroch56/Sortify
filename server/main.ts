@@ -16,6 +16,14 @@ const app = Fastify({
 })
 await app.register(proxyPlugin)
 
+// Simple permissive CORS for dev (adjust for production)
+app.addHook("onSend", async (_req, reply, payload) => {
+  reply.header("Access-Control-Allow-Origin", "*")
+  reply.header("Access-Control-Allow-Headers", "*")
+  reply.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+  return payload
+})
+
 // Function to generate a random string for state parameter
 function generateRandomString(length: number): string {
   const possible =
@@ -24,23 +32,6 @@ function generateRandomString(length: number): string {
     randomBytes(length),
     (b) => possible[b % possible.length],
   ).join("")
-}
-
-// Function to get user ID from Spotify API
-async function getUserId(access_token: string): Promise<string> {
-  try {
-    const res = await fetch("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    })
-    if (!res.ok) {
-      throw new Error("Failed to fetch user profile")
-    }
-    const data = (await res.json()) as { id: string }
-    return data.id
-  } catch (error) {
-    app.log.error(`Error fetching user ID: ${error}`)
-    throw error
-  }
 }
 
 // #region Routes
@@ -181,6 +172,34 @@ app.get<{ Querystring: { access_token: string } }>(
     }
   },
 )
+
+// Get tracks for a playlist (proxy)
+app.get<{
+  Params: { id: string }
+  Querystring: { access_token: string }
+}>("/playlists/:id/tracks", async (req, reply) => {
+  const { id } = req.params
+  const { access_token } = req.query
+  if (!access_token) {
+    return reply.code(400).send({ error: "Missing access_token" })
+  }
+  try {
+    const url = `https://api.spotify.com/v1/playlists/${id}/tracks?limit=100`
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${access_token}` },
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      return reply
+        .code(res.status)
+        .send({ error: "Spotify API error", details: text })
+    }
+    const data = await res.json()
+    reply.send(data)
+  } catch (_error) {
+    reply.code(500).send({ error: "Failed to fetch playlist tracks" })
+  }
+})
 
 try {
   await app.listen({ port: PORT })

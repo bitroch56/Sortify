@@ -1,3 +1,11 @@
-import { type RouteConfig, index } from "@react-router/dev/routes"
+import { type RouteConfig, index, route } from "@react-router/dev/routes"
 
-export default [index("routes/index.tsx")] satisfies RouteConfig
+// Route structure:
+// /            -> landing page (marketing / CTA)
+// /login       -> login page (redirects if already authed)
+// /app         -> authenticated dashboard (playlists + player)
+export default [
+  index("routes/index.tsx"),
+  route("login", "routes/login.tsx"),
+  route("app", "routes/app.tsx"),
+] satisfies RouteConfig
