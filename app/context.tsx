@@ -88,9 +88,6 @@ export function useAuth() {
   if (!ctx) {
     throw new Error("useAuth must be used within AuthProvider")
   }
-  if (!ctx) {
-    throw new Error("useAuth must be used within AuthProvider")
-  }
   return ctx
 }
 
