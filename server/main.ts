@@ -32,7 +32,9 @@ async function getUserId(access_token: string): Promise<string> {
     const res = await fetch("https://api.spotify.com/v1/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     })
-    if (!res.ok) throw new Error("Failed to fetch user profile")
+    if (!res.ok) {
+      throw new Error("Failed to fetch user profile")
+    }
     const data = (await res.json()) as { id: string }
     return data.id
   } catch (error) {

@@ -1,5 +1,20 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "warn",
+    "nursery": "off",
+    "pedantic": "off",
+    "perf": "warn",
+    "restriction": "off",
+    "style": "off",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "shared-node-browser": true
+  },
+  "ignorePatterns": ["**/.react-router/", "**/build/", "**/node_modules/"],
   "plugins": [
     "import",
     "oxc",
@@ -11,21 +26,6 @@
     "typescript",
     "unicorn"
   ],
-  "categories": {
-    "correctness": "warn",
-    "perf": "warn",
-    "suspicious": "warn",
-    "pedantic": "off",
-    "style": "off",
-    "restriction": "off",
-    "nursery": "off"
-  },
-  "env": {
-    "es2025": true,
-    "browser": true,
-    "shared-node-browser": true
-  },
-  "ignorePatterns": ["**/dist/", "**/node_modules/"],
   "rules": {
     "capitalized-comments": "off",
     "curly": ["error", "all"],
@@ -43,18 +43,25 @@
     "no-prototype-builtins": "error",
     "no-redeclare": "error",
     "no-regex-spaces": "error",
+    "no-unassigned-import": [
+      "warn",
+      {
+        "allow": ["**/*.scss", "**/*.css", "dotenv/config"]
+      }
+    ],
+    "no-underscore-dangle": "off",
     "no-unexpected-multiline": "off",
     "no-unused-expressions": "error",
-    "no-useless-call": "error",
-    "no-underscore-dangle": "off",
     "no-useless-assignment": "off",
+    "no-useless-call": "error",
     "no-var": "error",
     "one-var": "off",
-    "prefer-named-capture-group": "off",
-    "require-unicode-regexp": "off",
     "oxc/no-accumulating-spread": "error",
+    "prefer-named-capture-group": "off",
     "prefer-rest-params": "error",
     "prefer-spread": "error",
+    "react/react-in-jsx-scope": "off",
+    "require-unicode-regexp": "off",
     "typescript/ban-ts-comment": "error",
     "typescript/no-empty-object-type": "error",
     "typescript/no-explicit-any": "warn",

@@ -1,6 +1,11 @@
+# Node
 node_modules
-dist
-dist-ssr
-*.local
+
+# React Router
+.react-router
+build
+
+# Local stuff
 .prettier-cache
+*.local
 .env

@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "edwinhuish.better-comments-next",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-rename-tag",
+    "kisstkondoros.vscode-gutter-preview",
+    "mikestead.dotenv",
+    "nhoizey.gremlins",
+    "nyxb.vscode-styled-colors",
+    "oxc.oxc-vscode",
+    "pflannery.vscode-versionlens",
+    "wix.vscode-import-cost",
+    "yoavbls.pretty-ts-errors"
+  ]
+}

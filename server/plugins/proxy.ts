@@ -1,7 +1,7 @@
 import fp from "fastify-plugin"
 import httpProxy from "@fastify/http-proxy"
 
-import { FastifyInstance } from "fastify"
+import type { FastifyInstance } from "fastify"
 
 export default fp(async function proxyPlugin(fastify: FastifyInstance) {
   await fastify.register(httpProxy, {
