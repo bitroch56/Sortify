@@ -1,0 +1,8 @@
+{
+  "endOfLine": "lf",
+  "plugins": ["@prettier/plugin-oxc"],
+  "semi": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false
+}

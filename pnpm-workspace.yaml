@@ -1,0 +1,13 @@
+lockfileIncludeTarballUrl: true
+
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - esbuild
+  - simple-git-hooks
+
+overrides:
+  vite: "npm:rolldown-vite@latest"
+
+resolutionMode: highest
+
+savePrefix: ""

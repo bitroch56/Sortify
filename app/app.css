@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --color-spotify: #1db954;
+  --color-spotify-accent: #1ed760;
+  --color-background: var(--color-gray-950);
+  --color-foreground: 230 230 230;
+}
+
+html,
+body {
+  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utilities */
+.bg-app-gradient {
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(29, 185, 84, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(30, 215, 96, 0.15),
+      transparent 65%
+    ),
+    linear-gradient(to bottom, hsl(220 40% 3%), hsl(220 40% 5%));
+  @apply dark:bg-gray-950 dark:[background:radial-gradient(circle_at_20%_20%,rgba(29,185,84,0.25),transparent_60%),radial-gradient(circle_at_80%_30%,rgba(30,215,96,0.18),transparent_65%),linear-gradient(to_bottom,hsl(220_40%_4%),hsl(220_40%_2%))];
+}
+
+:root {
+  --spotify: #1db954;
+  --spotify-accent: #1ed760;
+}
+
+.text-foreground {
+  color: rgb(var(--color-foreground) / 1);
+}
+.text-foreground\/70 {
+  color: rgb(var(--color-foreground) / 0.7);
+}
+.text-foreground\/80 {
+  color: rgb(var(--color-foreground) / 0.8);
+}
+
+.from-spotify {
+  --tw-gradient-from: var(--spotify) var(--tw-gradient-from-position);
+  --tw-gradient-to: color-mix(in srgb, var(--spotify) 0%, transparent)
+    var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.to-spotify-accent {
+  --tw-gradient-to: var(--spotify-accent) var(--tw-gradient-to-position);
+}
+.text-spotify-accent {
+  color: var(--spotify-accent);
+}
+
+/* Scrollbar styling (webkit) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}

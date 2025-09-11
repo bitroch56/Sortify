@@ -1,2 +1,11 @@
+# Node
 node_modules
+
+# React Router
+.react-router
+build
+
+# Local stuff
+.prettier-cache
+*.local
 .env
