@@ -98,7 +98,7 @@ app.get('/auth/token', (req, res) => {
 
 app.get('/auth/playlists', (req, res) => {
     var playlistsOptions = {
-        url: 'https://accounts.spotify.com/api/token4',
+        url: 'https://api.spotify.com/v1/me/playlists',
         headers: { 'Authorization': 'Bearer ' + access_token },
         json: true
     };
