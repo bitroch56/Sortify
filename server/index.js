@@ -1,143 +1,118 @@
-// Necessary imports
 const express = require('express');
 const dotenv = require('dotenv');
+const path = require('path');
 const request = require('request');
-const axios = require('axios');
 
-// Initialize Express app
-const app = express();
 const port = 5000;
 
-// Load environment variables from .env file
 dotenv.config();
 
-// Spotify API credentials
-const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
-const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+var spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
+var spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+var spotify_redirect_uri = 'http://127.0.0.1:5000/auth/callback';
 
-// Redirect URI for Spotify authentication
-const redirect_uri = 'http://127.0.0.1:3000/auth/callback';
+var access_token = '';
+var refresh_token = '';
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+var generateRandomString = function(length) {
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-// Function to generate a random string for state parameter
-const generateRandomString = (length) => {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+    for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 };
 
-// Function to get user ID from Spotify API
-async function getUserId(access_token) {
-  try {
-    const response = await axios.get('https://api.spotify.com/v1/me', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    });
-    return response.data.id;
-  } catch (error) {
-    console.error('Error fetching user ID:', error);
-    throw error;
-  }
-}
+var app = express();
 
-// Routes
-// Route to initiate Spotify login
+// Permet au serveur de servir les fichiers statiques du frontend
+app.use(express.static(path.join(__dirname, '../build')));
+
+// Endpoint de connexion qui redirige vers l'API d'autorisation de Spotify
 app.get('/auth/login', (req, res) => {
-  const scope = 'streaming user-read-email user-read-private';
-  const state = generateRandomString(16);
+    var scope = "streaming user-read-email user-read-private user-read-playback-state playlist-read-private playlist-read-collaborative";
+    var state = generateRandomString(16);
 
-  const auth_query_parameters = new URLSearchParams({
-    response_type: 'code',
-    client_id: spotify_client_id,
-    scope: scope,
-    redirect_uri: redirect_uri,
-    state: state,
-  });
+    var auth_query_parameters = new URLSearchParams({
+        response_type: "code",
+        client_id: spotify_client_id,
+        scope: scope,
+        redirect_uri: spotify_redirect_uri,
+        state: state
+    });
 
-  res.redirect('https://accounts.spotify.com/authorize?' + auth_query_parameters.toString());
+    res.redirect('https://accounts.spotify.com/authorize?' + auth_query_parameters.toString());
 });
 
-// Callback route for Spotify authentication
+// Endpoint de callback qui reçoit le code d'autorisation de Spotify
 app.get('/auth/callback', (req, res) => {
-  const code = req.query.code || null;
-  const state = req.query.state || null;
+    var code = req.query.code;
 
-  if (state === null) {
-    res.redirect('/#' + new URLSearchParams({ error: 'state_mismatch' }).toString());
-  } else {
-    const authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: 'authorization_code',
-      },
-      headers: {
-        'Authorization': 'Basic ' + (Buffer.from(spotify_client_id + ':' + spotify_client_secret).toString('base64')),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      json: true
+    var authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+            code: code,
+            redirect_uri: spotify_redirect_uri,
+            grant_type: 'authorization_code'
+        },
+        headers: {
+            'Authorization': 'Basic ' + (Buffer.from(spotify_client_id + ':' + spotify_client_secret).toString('base64'))
+        },
+        json: true
     };
 
-    request.post(authOptions, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const access_token = body.access_token;
-        const refresh_token = body.refresh_token;
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            access_token = body.access_token;
+            refresh_token = body.refresh_token;
 
-        res.redirect('/#');
-        
-        res.redirect('/#' + new URLSearchParams({
-          access_token: access_token,
-          refresh_token: refresh_token
-        }).toString());
+            var userOptions = {
+                url: 'https://api.spotify.com/v1/me',
+                headers: { 'Authorization': 'Bearer ' + access_token },
+                json: true
+            };
 
-      } else {
-        res.redirect('/#' + new URLSearchParams({ error: 'invalid_token' }).toString());
-      }
+            // Requête pour obtenir le nom de l'utilisateur
+            request.get(userOptions, function(error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    const user_name = body.display_name;
+                    // Redirection vers le frontend avec le nom de l'utilisateur dans le hash
+                    res.redirect(`http://127.0.0.1:5000/#user_name=${encodeURIComponent(user_name)}`);
+                } else {
+                    res.redirect('/#error=user_info_failed');
+                }
+            });
+        } else {
+            res.redirect('/#error=invalid_token');
+        }
     });
-  }
 });
 
-// Route to get access token
+// Endpoint pour récupérer le jeton d'accès (utile pour la persistance de session)
 app.get('/auth/token', (req, res) => {
-  res.json({ access_token: req.query.access_token });
-});
-
-// Basic route to test server
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-// Route to get user's playlists
-app.get('/users/playlists', async (req, res) => {
-  const access_token = req.query.access_token;
-
-  try {
-    const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      },
-      params: {
-        limit: 50,
-        offset: 0
-      }
+    res.json({
+        access_token: access_token
     });
-
-    res.json(response.data);
-    
-  } catch (error) {
-    console.error('Error fetching user playlists:', error);
-    res.status(500).json({ error: 'Failed to fetch playlists' });
-  }
 });
 
-// Start the server
+app.get('/auth/playlists', (req, res) => {
+    var playlistsOptions = {
+        url: 'https://accounts.spotify.com/api/token4',
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+    };
+
+    request.get(playlistsOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            res.json(body.items);
+        } else {
+            res.status(response.statusCode).send(error);
+        }
+    });
+});
+
+// Démarrage du serveur sur le port spécifié
 app.listen(port, () => {
-  console.log(`Listening at http://127.0.0.1:${port}`);
+    console.log(`Listening at http://127.0.0.1:${port}`);
 });

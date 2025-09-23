@@ -1,29 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import WebPlayback from './WebPlayback'
-import Login from './Login'
+import Login from './Login';
+import UserDisplay from './UserDisplay';
 import './App.css';
 
 function App() {
+    const [userName, setUserName] = useState('');
 
-  const [token, setToken] = useState('');
+    useEffect(() => {
+        const hash = window.location.hash
+            .substring(1)
+            .split('&')
+            .reduce((initial, item) => {
+                if (item) {
+                    var parts = item.split('=');
+                    initial[parts[0]] = decodeURIComponent(parts[1]);
+                }
+                return initial;
+            }, {});
 
-  useEffect(() => {
+        window.location.hash = '';
 
-    async function getToken() {
-      const response = await fetch('/auth/token');
-      const json = await response.json();
-      setToken(json.access_token);
-    }
+        const _userName = hash.user_name;
 
-    getToken();
+        if (_userName) {
+            setUserName(_userName);
+        }
+    }, []);
 
-  }, []);
-
-  return (
-    <>
-        { (token === '') ? <Login/> : <WebPlayback token={token} /> }
-    </>
-  );
+    return (
+        <>
+            { (userName === '') ? <Login/> : <UserDisplay userName={userName} /> }
+        </>
+    );
 }
 
 export default App;
