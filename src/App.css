@@ -76,3 +76,160 @@
     color: #B3B3B3;
     margin-top: 5px;
 }
+
+/* Styles pour la page de détail de playlist */
+.back-button {
+    background-color: transparent;
+    border: 1px solid #1DB954;
+    color: #1DB954;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.back-button:hover {
+    background-color: #1DB954;
+    color: #000;
+}
+
+.playlist-detail-header {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: #1A1A1A;
+    border-radius: 10px;
+}
+
+.playlist-detail-image {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.playlist-detail-info {
+    flex: 1;
+    text-align: left;
+}
+
+.playlist-detail-info h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+    color: #1DB954;
+}
+
+.playlist-owner {
+    font-size: 1.1rem;
+    color: #B3B3B3;
+    margin: 0.5rem 0;
+}
+
+.playlist-description {
+    font-size: 0.95rem;
+    color: #E6E6E6;
+    margin: 1rem 0;
+    line-height: 1.5;
+}
+
+.playlist-tracks-count {
+    font-size: 1rem;
+    color: #1DB954;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+/* Styles pour les boutons de mode */
+.playlist-modes {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.mode-button {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    text-transform: uppercase;
+}
+
+.tournament-mode {
+    background-color: #1DB954;
+    color: #000;
+}
+
+.tournament-mode:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+}
+
+.linear-mode {
+    background-color: #191919;
+    color: #1DB954;
+    border: 2px solid #1DB954;
+}
+
+.linear-mode:hover {
+    background-color: #1DB954;
+    color: #000;
+    transform: scale(1.05);
+}
+
+/* Styles pour la liste des pistes */
+.tracks-container {
+    margin-top: 2rem;
+}
+
+.tracks-list {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: #1A1A1A;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.track-item:hover {
+    background-color: #282828;
+}
+
+.track-number {
+    width: 40px;
+    text-align: center;
+    color: #B3B3B3;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.track-name {
+    flex: 1;
+    font-weight: bold;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-artist {
+    flex: 0.8;
+    color: #B3B3B3;
+    font-size: 0.9rem;
+    text-align: right;
+}

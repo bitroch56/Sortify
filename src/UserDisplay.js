@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import PlaylistDetail from './PlaylistDetail';
 import './App.css';
 
 function UserDisplay(props) {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedPlaylist, setSelectedPlaylist] = useState(null);
 
     useEffect(() => {
         async function getPlaylists() {
@@ -16,6 +18,14 @@ function UserDisplay(props) {
         getPlaylists();
     }, []);
 
+    if (selectedPlaylist) {
+        return <PlaylistDetail playlist={selectedPlaylist} onBack={() => setSelectedPlaylist(null)} />;
+    }
+
+    const handlePlaylistClick = (playlist) => {
+        setSelectedPlaylist(playlist);
+    };
+
     return (
         <div className="App">
             <header className="App-header">
@@ -27,18 +37,21 @@ function UserDisplay(props) {
                         <p>Chargement des playlists...</p>
                     ) : playlists.length > 0 ? (
                         playlists.map((playlist) => (
-                            <div key={playlist.id} className="playlist-card">
-                                <a href={playlist.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                                    <img 
-                                        src={playlist.images[0]?.url || 'https://via.placeholder.com/150'} 
-                                        alt={playlist.name} 
-                                        className="playlist-image" 
-                                    />
-                                    <div className="playlist-info">
-                                        <p className="playlist-name">{playlist.name}</p>
-                                        <p className="playlist-tracks">Total de pistes : {playlist.tracks.total}</p>
-                                    </div>
-                                </a>
+                            <div 
+                                key={playlist.id} 
+                                className="playlist-card"
+                                onClick={() => handlePlaylistClick(playlist)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <img 
+                                    src={playlist.images[0]?.url || 'https://via.placeholder.com/150'} 
+                                    alt={playlist.name} 
+                                    className="playlist-image" 
+                                />
+                                <div className="playlist-info">
+                                    <p className="playlist-name">{playlist.name}</p>
+                                    <p className="playlist-tracks">Total de pistes : {playlist.tracks.total}</p>
+                                </div>
                             </div>
                         ))
                     ) : (
