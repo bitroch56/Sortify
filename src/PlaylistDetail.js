@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Tournament from './Tournament';
 
 function PlaylistDetail(props) {
     const { playlist, onBack } = props;
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [mode, setMode] = useState('detail');
 
     useEffect(() => {
         async function getTracks() {
@@ -21,6 +23,10 @@ function PlaylistDetail(props) {
 
         getTracks();
     }, [playlist.id]);
+
+    if (mode === 'tournament') {
+        return <Tournament playlist={playlist} tracks={tracks} onCancel={() => setMode('detail')} />;
+    }
 
     return (
         <div className="App">
@@ -42,7 +48,7 @@ function PlaylistDetail(props) {
                 </div>
 
                 <div className="playlist-modes">
-                    <button className="mode-button tournament-mode">Mode Tournoi</button>
+                    <button className="mode-button tournament-mode" onClick={() => setMode('tournament')}>Mode Tournoi</button>
                     <button className="mode-button linear-mode">Mode Linéaire</button>
                 </div>
 

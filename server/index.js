@@ -26,6 +26,8 @@ var generateRandomString = function(length) {
 
 var app = express();
 
+app.use(express.json());
+
 // Permet au serveur de servir les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../build')));
 
@@ -115,4 +117,81 @@ app.get('/auth/playlists', (req, res) => {
 // Démarrage du serveur sur le port spécifié
 app.listen(port, () => {
     console.log(`Listening at http://127.0.0.1:${port}`);
+});
+
+app.get('/auth/playlist/:id/tracks', (req, res) => {
+    const playlistId = req.params.id;
+    var options = {
+        url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`,
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+    };
+
+    request.get(options, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            const tracks = body.items.map(item => item.track).filter(Boolean);
+            res.json(tracks);
+        } else {
+            res.status(response ? response.statusCode : 500).send(error || body);
+        }
+    });
+});
+
+app.post('/auth/create_playlist', (req, res) => {
+    const { name, description, uris } = req.body;
+    if (!name || !uris || !Array.isArray(uris)) {
+        return res.status(400).json({ error: 'Invalid payload' });
+    }
+
+    var meOptions = {
+        url: 'https://api.spotify.com/v1/me',
+        headers: { 'Authorization': 'Bearer ' + access_token },
+        json: true
+    };
+
+    request.get(meOptions, function(error, response, body) {
+        if (error || response.statusCode !== 200) {
+            return res.status(response ? response.statusCode : 500).send(error || body);
+        }
+
+        const userId = body.id;
+
+        var createOptions = {
+            url: `https://api.spotify.com/v1/users/${userId}/playlists`,
+            headers: { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, description: description || '', public: false })
+        };
+
+        request.post(createOptions, function(err2, resp2, body2) {
+            if (err2 || resp2.statusCode < 200 || resp2.statusCode >= 300) {
+                return res.status(resp2 ? resp2.statusCode : 500).send(err2 || body2);
+            }
+
+            let created = JSON.parse(body2);
+            const playlistId = created.id;
+
+            const batches = [];
+            for (let i = 0; i < uris.length; i += 100) {
+                batches.push(uris.slice(i, i + 100));
+            }
+
+            let batchPromises = batches.map(batch => {
+                return new Promise((resolve, reject) => {
+                    var addOptions = {
+                        url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+                        headers: { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ uris: batch })
+                    };
+                    request.post(addOptions, function(e, r, b) {
+                        if (e || r.statusCode < 200 || r.statusCode >= 300) reject(e || b);
+                        else resolve(b);
+                    });
+                });
+            });
+
+            Promise.all(batchPromises)
+                .then(() => res.json({ success: true, playlist: created }))
+                .catch(errAdd => res.status(500).send(errAdd));
+        });
+    });
 });
